@@ -1,0 +1,28 @@
+.pb-0-25 {
+    padding-bottom: 0.25em !important;
+}
+
+.nav {
+    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.nav .box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+pre.small {
+     font-size: 0.75em;
+}
+
+.nav .box .end {
+    margin-left: auto;
+}
+
+.feather {
+    vertical-align: middle;
+    margin-right: 0.25em;
+}

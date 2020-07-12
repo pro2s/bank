@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <link rel="shortcut icon" href="/alfa-favicon.png">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+  <body>
+    {{> nav }}
+    {{> flash }}
+    {{{body}}}
+    <script>
+      feather.replace()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<div class="pure-g" style="margin-top: 2em;">
+    <div class="pure-u-1-6"></div>
+    <div class="pure-u-1-3">
+        <a class="pure-button" href="/auth">Log in with Codegrant (Business API)</a>
+    </div>
+    <div class="pure-u-1-3">
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item pb-0-25">
+                <a class="pure-button" href="/registration">Register in system (Individual API)</a>
+            </li>
+            <li class="pure-menu-item pb-0-25">
+                <a class="pure-button" href="/individual/login">Log in with credentials (Individual API)</a>
+            </li>
+        </ul>
+    </div>
+    <div class="pure-u-1-6"></div>
+</div>
+<div class="pure-g" style="margin-top: 2em;">
+    <div class="pure-u-1-6"></div>
+    <div class="pure-u-1-3">
+        {{#if partner}}
+            <a class="pure-button" href="/partner/statment">Account/Statment</a>
+        {{/if}}
+    </div>
+    <div class="pure-u-1-3">
+        {{#if individual}}
+            <a class="pure-button" href="/individual/statment">Account/Statment</a>
+            <a class="pure-button" href="/individual/products">Account/Products</a>
+        {{/if}}
+    </div>
+    <div class="pure-u-1-6"></div>
+</div>
+
