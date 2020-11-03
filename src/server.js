@@ -6,27 +6,25 @@ const ngrok = require('./lib/ngrok');
 
 const port = process.env.PRORT || 3000;
 const host = process.env.HOST || 'http://www.client.example.com';
-const callback = '/callback';
-const baseUrl = url.parse(`${host}:${port}${callback}`);
-const listener = (callbackUrl, cb) => {
-  app.listen(port, (err) => {
-    if (err) return console.error(err);
-    console.log('Set the new webhook to"', callbackUrl, '" server: ', url.resolve(callbackUrl, '/'));
-    return cb({
-      app,
-      callbackUrl,
-    });
-  });
-};
+const baseUrl = url.parse(`${host}:${port}`);
 
-module.exports = (cb) => {
-  return ngrok.getPublicUrl().then(publicUrl => {
+const listener = (appUrl, init) => app.listen(port, (err) => {
+  if (err) return console.error(err);
+  console.log('Set the new webhook to"', appUrl, '" server: ', url.resolve(appUrl, '/'));
+
+  return init(app, appUrl);
+});
+
+module.exports = async (init) => {
+  try {
+    const publicUrl = await ngrok.getPublicUrl();
     console.log('Set the new webhook to"', publicUrl);
 
-    listener(url.resolve(publicUrl, callback), cb);
-  }).catch(error => {
+    listener(publicUrl, init);
+  } catch (error) {
     console.log('Can not connect to ngrok server. Is it running?');
 
-    listener(baseUrl, cb);
-  });
+
+    listener(baseUrl, init);
+  }
 };
