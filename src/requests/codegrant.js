@@ -10,15 +10,17 @@ module.exports.init = (app, appUrl) => {
       secret: process.env.SECRET
     },
     auth: {
-      tokenHost: process.env.API_HOST
+      tokenHost: process.env.API_HOST,
+      tokenPath: '/token',
+      authorizePath: '/authorize'
     }
   };
-
+  const redirect_uri = url.resolve(appUrl, callback);
   const client = new AuthorizationCode(config);
 
   const authorizationUri = client.authorizeURL({
-    redirect_uri: url.resolve(appUrl, callback),
-    scope: 'accounts',
+    redirect_uri,
+    scope: 'profile accounts',
     state: '1'
   });
 
@@ -31,7 +33,7 @@ module.exports.init = (app, appUrl) => {
 
   app.get('/callback', async (req, res) => {
     const { code } = req.query;
-    const options = { code };
+    const options = { code, redirect_uri };
 
     try {
       const accessToken = await client.getToken(options);

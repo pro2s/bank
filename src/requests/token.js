@@ -1,6 +1,8 @@
 const url = require('url');
 const https = require('https');
 const querystring = require('querystring');
+const userLogin = 'Undefined';
+const userPassword = 'Undefined';
 
 module.exports = (req, res) => {
     const data = querystring.stringify({
