@@ -1,8 +1,19 @@
 'use strict';
+const express = require('express');
+const app = express();
+app.use(express.static('public'));
 
-const app = require('express')();
+const session = require('express-session')
 const url = require('url');
 const ngrok = require('./lib/ngrok');
+
+app.set('trust proxy', 1);
+app.use(session({
+  secret: process.env.SESSION_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}));
 
 const port = process.env.PRORT || 3000;
 const host = process.env.HOST || 'http://www.client.example.com';
