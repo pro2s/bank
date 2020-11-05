@@ -1,13 +1,14 @@
 const url = require('url');
 const https = require('https');
+const querystring = require('querystring');
 
-module.exports = (token, params = {}) => {
+module.exports = (token, path, params = {}) => {
   const bankUrl = url.parse(process.env.API_HOST);
-
+  const query = querystring.stringify(params);
   const options = {
     hostname: bankUrl.hostname,
     port: bankUrl.port,
-    path: '/individual/1.0.0/accounts/statement',
+    path: path + (query ? '?' + query : ''),
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

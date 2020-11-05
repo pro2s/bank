@@ -36,11 +36,13 @@ module.exports.init = (app, appUrl) => {
     const options = { code, redirect_uri };
 
     try {
-      const accessToken = await client.getToken(options);
+      const { token } = await client.getToken(options);
 
-      console.log('The resulting token: ', accessToken.token);
+      console.log('The resulting token: ', token);
 
-      return res.status(200).json(accessToken.token);
+      req.session.token = token.access_token;
+
+      res.redirect('/partner/statment');
     } catch (error) {
       console.error('Access Token Error', error.message);
       return res.status(500).json('Authentication failed');

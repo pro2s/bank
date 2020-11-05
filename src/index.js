@@ -4,13 +4,17 @@ const path = require('path');
 const registration = require('./controllers/registration');
 const confirm = require('./controllers/confirm');
 const codegrant = require('./controllers/codegrant');
-const statment = require('./controllers/statment');
+const individual = require('./controllers/individual');
+const partner = require('./controllers/partner');
 const exphbs = require('express-handlebars');
 
 const exphbsOptions = {
   defaultLayout: 'main',
   extname: '.html',
   layoutsDir: path.join(__dirname, 'views', 'layouts'),
+  partialsDir: [
+    path.join(__dirname, 'views', 'partials'),
+  ]
 };
 
 server((app, appUrl) => {
@@ -41,6 +45,7 @@ server((app, appUrl) => {
 
   app.use('/registration', registration);
 
-  // Statment page
-  app.get('/statment', statment);
+  app.use('/individual', individual);
+
+  app.use('/partner', partner);
 });

@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     const tokenResult = await token(credentials);
     req.session.token = tokenResult.access_token;
 
-    res.redirect('/statment');
+    res.redirect('/individual/statment');
   } catch (error) {
     res.status(500).json(error.message || error);
   }

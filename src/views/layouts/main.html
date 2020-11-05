@@ -8,17 +8,7 @@
     <script src="https://unpkg.com/feather-icons"></script>
   </head>
   <body>
-    <div class="pure-g" style="margin-top: 1em;">
-      <div class="pure-u-1-5"></div>
-      <div class="pure-u-3-5">
-        <ul class="flashes">
-          {{#each flash}}
-            <li>{{this.message}}</li>
-          {{/each}}
-        </ul>
-      </div>
-      <div class="pure-u-1-5"></div>
-    </div>
+    {{> flash }}
     {{{body}}}
   </body>
 </html>
