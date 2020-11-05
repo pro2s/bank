@@ -26,6 +26,9 @@ server((app, appUrl) => {
       req.session.flash = [];
     }
 
+    app.locals.token = !!req.session.token;
+    app.locals.debug = !!process.env.DEBUG;
+
     next();
   });
 
@@ -33,13 +36,21 @@ server((app, appUrl) => {
   app.set('view engine', 'html');
   app.set('views', path.join(__dirname, 'views'));
 
-  // Index page
   app.get('/', (req, res) => {
     res.render('index', {title: 'Logon'});
   });
 
-  // Codegrant handler
-  codegrant.init(app, appUrl);
+  app.get('/token', (req, res) => {
+    res.render('data', {title: 'Token', data: req.session.token});
+  });
+
+  app.get('/logout', async (req, res) => {
+    req.session.flash.push({message: 'Logout complete.'});
+    req.session.token = null;
+    res.redirect('/');
+  });
+
+  app.use(codegrant.init(appUrl));
 
   app.use('/confirm', confirm);
 

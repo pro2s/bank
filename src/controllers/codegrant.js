@@ -1,39 +1,40 @@
 const { AuthorizationCode } = require('simple-oauth2');
+const express = require('express');
+const router = express.Router();
 const url = require('url');
 const callback = '/callback';
 
-module.exports.init = (app, appUrl) => {
-  // Callback service parsing the authorization token and asking for the access token
-  const config = {
-    client: {
-      id: process.env.CLIENT,
-      secret: process.env.SECRET
-    },
-    auth: {
-      tokenHost: process.env.API_HOST,
-      tokenPath: '/token',
-      authorizePath: '/authorize'
-    }
-  };
-  const redirect_uri = url.resolve(appUrl, callback);
-  const client = new AuthorizationCode(config);
+const config = {
+  client: {
+    id: process.env.CLIENT,
+    secret: process.env.SECRET
+  },
+  auth: {
+    tokenHost: process.env.API_HOST,
+    tokenPath: '/token',
+    authorizePath: '/authorize'
+  }
+};
 
-  const authorizationUri = client.authorizeURL({
-    redirect_uri,
-    scope: 'profile accounts',
-    state: '1'
-  });
+const client = new AuthorizationCode(config);
+const getAuthorizationUri = (redirect_uri) => client.authorizeURL({
+  redirect_uri,
+  scope: 'profile accounts',
+  state: '1',
+});
+
+module.exports.init = (appUrl) => {
+  // Callback service parsing the authorization token and asking for the access token
+  const redirectUri = url.resolve(appUrl, callback);
 
   // Initial page redirecting to Bank
-  app.get('/auth', (req, res) => {
-    console.log(authorizationUri);
-
-    res.redirect(authorizationUri);
+  router.get('/auth', (req, res) => {
+    res.redirect(getAuthorizationUri(redirectUri));
   });
 
-  app.get('/callback', async (req, res) => {
+  router.get(callback, async (req, res) => {
     const { code } = req.query;
-    const options = { code, redirect_uri };
+    const options = { code, redirect_uri: redirectUri };
 
     try {
       const { token } = await client.getToken(options);
@@ -48,4 +49,6 @@ module.exports.init = (app, appUrl) => {
       return res.status(500).json('Authentication failed');
     }
   });
+
+  return router;
 }

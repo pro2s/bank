@@ -18,7 +18,7 @@ module.exports = (token, path, params = {}) => {
 
   return new Promise((resolve, reject) => {
     const request = https.request(options, res => {
-      console.log(`statusCode: ${res.statusCode}`);
+      console.log(`${path}: ${res.statusCode}`);
       let json = '';
       res.on('error', err => reject(err));
       res.on('data', data => json += data);

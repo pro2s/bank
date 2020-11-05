@@ -16,7 +16,7 @@ module.exports = (path, type, data) => {
 
   return new Promise((resolve, reject) => {
     const request = https.request(options, res => {
-      console.log(`statusCode: ${res.statusCode}`);
+      console.log(`${path}: ${res.statusCode}`);
       let result = '';
       res.on('error', err => reject(err));
       res.on('data', data => result += data);
