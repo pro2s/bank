@@ -19,8 +19,17 @@ app.use(session({
 }));
 
 const port = process.env.PRORT || 3000;
-const host = process.env.HOST || 'http://www.client.example.com';
-const baseUrl = url.parse(`${host}:${port}`);
+
+const getBaseUrl = (port) => {
+  if (process.env.HEROKU_URL) {
+    return process.env.HEROKU_URL;
+  } else {
+    const host = process.env.HOST || 'http://www.client.example.com';
+    return url.parse(`${host}:${port}`);
+  }
+};
+
+const baseUrl = getBaseUrl(port);
 
 const listener = (appUrl, init) => app.listen(port, (err) => {
   if (err) return console.error(err);
