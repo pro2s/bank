@@ -22,8 +22,12 @@ module.exports = (token, params = {}) => {
       res.on('error', err => reject(err));
       res.on('data', data => json += data);
       res.on('end', () => {
+        try {
           const result = JSON.parse(json);
           resolve(result);
+        } catch {
+          reject(json);
+        }
       });
     });
     request.on('error', error => {

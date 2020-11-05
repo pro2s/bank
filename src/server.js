@@ -1,18 +1,21 @@
 'use strict';
 const express = require('express');
-const app = express();
-app.use(express.static('public'));
-
+const bodyParser = require('body-parser');
 const session = require('express-session')
 const url = require('url');
 const ngrok = require('./lib/ngrok');
+
+const app = express();
+app.use(express.static('public'));
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_KEY,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: true }
 }));
 
 const port = process.env.PRORT || 3000;
