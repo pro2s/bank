@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const confirm = require('../api/confirm');
 const token = require('../api/token');
+const { setToken, flash } = require('../lib/session');
 
 router.get('/', (req, res) => {
   res.render('confirm', {title: 'Confirm registration'});
@@ -15,13 +16,13 @@ router.post('/', async (req, res) => {
     const credentials = {
       login: req.body.login || null,
       password: req.body.password || null,
-    }
+    };
 
     const result = await confirm(req.body.sms || '');
-    req.session.flash.push(result);
+    flash(req, result.message);
 
     const tokenResult = await token(credentials);
-    req.session.token = tokenResult.access_token;
+    setToken(req, tokenResult);
 
     res.redirect('/individual/statment');
   } catch (error) {

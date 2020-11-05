@@ -7,6 +7,7 @@ const codegrant = require('./controllers/codegrant');
 const individual = require('./controllers/individual');
 const partner = require('./controllers/partner');
 const exphbs = require('express-handlebars');
+const { sessionMidleware, clearToken, flash } = require('./lib/session');
 
 const exphbsOptions = {
   defaultLayout: 'main',
@@ -18,39 +19,23 @@ const exphbsOptions = {
 };
 
 server((app, appUrl) => {
-  app.use((req, res, next) => {
-    if (!req.session.flash) {
-      req.session.flash = [];
-    } else {
-      app.locals.flash = req.session.flash;
-      req.session.flash = [];
-    }
-
-    app.locals.token = !!req.session.token;
-    app.locals.debug = !!process.env.DEBUG;
-
-    next();
-  });
+  app.use(sessionMidleware(app));
 
   app.engine('html', exphbs(exphbsOptions));
   app.set('view engine', 'html');
   app.set('views', path.join(__dirname, 'views'));
 
-  app.get('/', (req, res) => {
-    res.render('index', {title: 'Logon'});
-  });
+  app.get('/', (req, res) => res.render('index', {title: 'Logon'}));
 
-  app.get('/token', (req, res) => {
-    res.render('data', {title: 'Token', data: req.session.token});
-  });
+  app.get('/token', (req, res) => res.render('data', {title: 'Token', data: req.session.token}));
 
   app.get('/logout', async (req, res) => {
-    req.session.flash.push({message: 'Logout complete.'});
-    req.session.token = null;
+    flash(req, 'Logout complete.');
+    clearToken(req);
     res.redirect('/');
   });
 
-  app.use(codegrant.init(appUrl));
+  app.use('/', codegrant.init(appUrl));
 
   app.use('/confirm', confirm);
 

@@ -2,6 +2,7 @@ const { AuthorizationCode } = require('simple-oauth2');
 const express = require('express');
 const router = express.Router();
 const url = require('url');
+const { setToken } = require('../lib/session');
 const callback = '/callback';
 
 const config = {
@@ -22,33 +23,29 @@ const getAuthorizationUri = (redirect_uri) => client.authorizeURL({
   scope: 'profile accounts',
   state: '1',
 });
+const getTokenOptions = (code, redirect_uri) => ({code, redirect_uri});
 
 module.exports.init = (appUrl) => {
   // Callback service parsing the authorization token and asking for the access token
   const redirectUri = url.resolve(appUrl, callback);
 
   // Initial page redirecting to Bank
-  router.get('/auth', (req, res) => {
-    res.redirect(getAuthorizationUri(redirectUri));
-  });
+  router.get('/auth', (req, res) =>  res.redirect(getAuthorizationUri(redirectUri)));
 
   router.get(callback, async (req, res) => {
     const { code } = req.query;
-    const options = { code, redirect_uri: redirectUri };
 
     try {
-      const { token } = await client.getToken(options);
+      const { token } = await client.getToken(getTokenOptions(code, redirectUri));
 
-      console.log('The resulting token: ', token);
-
-      req.session.token = token.access_token;
+      setToken(req, token, 'partner');
 
       res.redirect('/partner/statment');
     } catch (error) {
       console.error('Access Token Error', error.message);
-      return res.status(500).json('Authentication failed');
+      res.status(500).json(error.message || error);
     }
   });
 
   return router;
-}
+};

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const registration = require('../api/registration');
-
+const { flash } = require('../lib/session');
 router.get('/', (req, res) => {
   res.render('registration', {title: 'Individual registration'});
 });
@@ -14,8 +14,7 @@ router.post('/', async (req, res) => {
 
   try {
     const result = await registration(person);
-    req.session.flash.push(result);
-    req.session.save();
+    flash(req, result.message);
     res.redirect('/confirm');
   } catch (error) {
     res.status(500).json(error.message || error);
