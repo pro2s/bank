@@ -11,7 +11,7 @@ router.get('/statment', async (req, res) => {
     const numbers = accountsList.accounts.map(a => a.number).join(',');
     const data = await statment(token, {number: numbers});
 
-    res.render('data', {title: 'Logon', data: JSON.stringify({accountsList, data}, null, 2)});
+    res.render('data', {title: 'Logon', data: {accountsList, data}});
   } catch(error) {
     return res.status(500).json(error.message || error);
   }

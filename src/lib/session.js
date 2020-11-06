@@ -18,7 +18,7 @@ const sessionMidleware = (app) => (req, res, next) => {
     app.locals.flash = req.session.flash;
     req.session.flash = [];
   }
-
+  app.locals.path = req.path;
   app.locals.token = !!req.session.token;
   app.locals.partner = req.session.tokenType === 'partner';
   app.locals.individual = req.session.tokenType === 'individual';

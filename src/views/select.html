@@ -1,0 +1,14 @@
+<div class="pure-g" style="margin-top: 2em;">
+    <div class="pure-u-1-6"></div>
+    <div class="pure-u-2-3">
+        <form method="POST" action="{{ action }}" class="pure-form">
+            <fieldset>
+                <legend>{{ title }}</legend>
+                {{#each options}}
+                    <button class="pure-button" type="submit" name="value" value="{{ this }}">{{ this }}</button>
+                {{/each}}
+            </fieldset>
+        </form>
+    </div>
+    <div class="pure-u-1-6"></div>
+</div>

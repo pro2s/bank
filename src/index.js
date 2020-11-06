@@ -15,7 +15,10 @@ const exphbsOptions = {
   layoutsDir: path.join(__dirname, 'views', 'layouts'),
   partialsDir: [
     path.join(__dirname, 'views', 'partials'),
-  ]
+  ],
+  helpers: {
+    'json': (data) => JSON.stringify(data, null, 2),
+  }
 };
 
 server((app, appUrl) => {
@@ -44,4 +47,28 @@ server((app, appUrl) => {
   app.use('/individual', individual);
 
   app.use('/partner', partner);
+
+  app.use((err, req, res, next) => {
+    if (req.xhr) {
+      res.status(500).send(err);
+    } else {
+      next(err);
+    }
+  });
+
+  app.use((err, req, res, next) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    let message = err;
+
+    if (err.message instanceof Array) {
+      message = err.message.join('\n');
+    } else if (error.message) {
+      message = error.message;
+    }
+
+    res.render('error', {title: 'Error', message});
+  });
 });
