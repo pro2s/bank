@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   res.render('confirm', {title: 'Confirm registration'});
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   try {
     // TODO: Register user with credentials by req.body.email
 
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 
     res.redirect('/individual/statment');
   } catch (error) {
-    res.status(500).json(error.message || error);
+    next(error);
   }
 });
 

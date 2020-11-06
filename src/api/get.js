@@ -36,6 +36,10 @@ module.exports = (token, path, params = {}) => {
           return reject(error.fault || {'message': 'XML error'});
         }
 
+        if (res.statusCode !== 200) {
+          return reject(JSON.parse(result));
+        }
+
         resolve(JSON.parse(result));
       });
     });

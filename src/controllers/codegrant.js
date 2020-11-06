@@ -32,7 +32,7 @@ module.exports.init = (appUrl) => {
   // Initial page redirecting to Bank
   router.get('/auth', (req, res) =>  res.redirect(getAuthorizationUri(redirectUri)));
 
-  router.get(callback, async (req, res) => {
+  router.get(callback, async (req, res, next) => {
     const { code } = req.query;
 
     try {
@@ -43,7 +43,7 @@ module.exports.init = (appUrl) => {
       res.redirect('/partner/statment');
     } catch (error) {
       console.error('Access Token Error', error.message);
-      res.status(500).json(error.message || error);
+      next(error);
     }
   });
 

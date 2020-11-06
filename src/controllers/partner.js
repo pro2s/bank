@@ -3,7 +3,7 @@ const router = express.Router();
 const statment = require('../api/partner/accounts/statment');
 const accounts = require('../api/partner/accounts');
 
-router.get('/statment', async (req, res) => {
+router.get('/statment', async (req, res, next) => {
   try {
     const token = req.query.token || req.session.token;
 
@@ -13,7 +13,7 @@ router.get('/statment', async (req, res) => {
 
     res.render('data', {title: 'Logon', data: {accountsList, data}});
   } catch(error) {
-    return res.status(500).json(error.message || error);
+    next(error);
   }
 });
 

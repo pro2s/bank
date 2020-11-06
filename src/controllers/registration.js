@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
   res.render('registration', {title: 'Individual registration'});
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const person = {
     personId: req.body.id || null,
     isResident: req.body.resident === 'on',
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     flash(req, result.message);
     res.redirect('/confirm');
   } catch (error) {
-    res.status(500).json(error.message || error);
+    next(error);
   }
 });
 

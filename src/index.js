@@ -65,8 +65,8 @@ server((app, appUrl) => {
 
     if (err.message instanceof Array) {
       message = err.message.join('\n');
-    } else if (error.message) {
-      message = error.message;
+    } else if (err.message) {
+      message = err.message;
     }
 
     res.render('error', {title: 'Error', message});
