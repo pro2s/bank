@@ -1,6 +1,12 @@
+const xml2js = require('xml2js');
 const url = require('url');
 const https = require('https');
 const querystring = require('querystring');
+const stripPrefix = require('xml2js').processors.stripPrefix;
+const xmlOptons = {
+  tagNameProcessors: [ stripPrefix ],
+  attrNameProcessors: [ stripPrefix ],
+};
 
 module.exports = (token, path, params = {}) => {
   const bankUrl = url.parse(process.env.API_HOST);
@@ -19,16 +25,18 @@ module.exports = (token, path, params = {}) => {
   return new Promise((resolve, reject) => {
     const request = https.request(options, res => {
       console.log(`${path}: ${res.statusCode}`);
-      let json = '';
+      let result = '';
       res.on('error', err => reject(err));
-      res.on('data', data => json += data);
-      res.on('end', () => {
-        try {
-          const result = JSON.parse(json);
-          resolve(result);
-        } catch {
-          reject(json);
+      res.on('data', data => result += data);
+      res.on('end', async () => {
+        if (res.headers['content-type'].includes('application/xml')) {
+          const error = await xml2js.parseStringPromise(result, xmlOptons);
+          console.log(error);
+
+          return reject(error.fault || {'message': 'XML error'});
         }
+
+        resolve(JSON.parse(result));
       });
     });
     request.on('error', error => {
